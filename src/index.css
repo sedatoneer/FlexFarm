@@ -1,0 +1,238 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 1. TYPOGRAPHY & BASE
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+body {
+  @apply font-sans text-slate-700 bg-[#eef2f6];
+  font-family: 'Inter', sans-serif;
+  overflow: hidden; /* Scrollbar oluşmasını engelle */
+}
+
+/* 2. GAME BOARD (FARM)
+   ========================================================================== */
+.farm-bg {
+  background-color: #65a30d; /* Canlı Çim Yeşili */
+  /* Derinlik hissi veren hafif desen */
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15) 2px, transparent 2.5px),
+    radial-gradient(circle at 50% 50%, rgba(0,0,0,0.05) 2px, transparent 2.5px);
+  background-size: 24px 24px, 36px 36px;
+  background-position: 0 0, 12px 12px;
+  box-shadow: inset 0 0 150px rgba(0,0,0,0.3);
+}
+
+/* 3. GAME ELEMENTS (BARNS & ANIMALS)
+   ========================================================================== */
+
+/* Ahır Çerçevesi (İç renk React'ten gelir) */
+.barn-slot {
+  border: 6px solid #78350f; /* Koyu Ahşap Çerçeve */
+  border-radius: 1.5rem;
+  /* İç gölge derinlik katar, dış gölge zemine oturtur */
+  box-shadow: 
+    inset 0 6px 12px rgba(0,0,0,0.15),
+    0 8px 16px -4px rgba(0,0,0,0.4),
+    0 0 0 3px #92400e; /* Dış kontür */
+  position: relative;
+  overflow: visible; /* Çatı/Tabela dışarı taşabilsin */
+}
+
+/* Çatı Tabelası (Rengi React'ten '--roof-color' olarak alır) */
+.barn-slot::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 16px;
+  background-color: var(--roof-color, #94a3b8);
+  border: 2px solid #78350f;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  z-index: 5;
+}
+
+.animal-wrapper {
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); /* Yumuşak hareket */
+  filter: drop-shadow(0 12px 8px rgba(0,0,0,0.2));
+  z-index: 20;
+}
+
+/* 4. CODE EDITOR (VS CODE STYLE)
+   ========================================================================== */
+.editor-window {
+  font-family: 'JetBrains Mono', monospace;
+  background-color: #282c34; /* One Dark Pro Arkaplan */
+  border-radius: 0.75rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+  border: 1px solid #3e4451;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Header (MacOS Dots + Filename) */
+.editor-header {
+  background-color: #21252b;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #181a1f;
+}
+
+.window-dots { display: flex; gap: 6px; margin-right: 1rem; }
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.dot-red { background-color: #ff5f56; }
+.dot-yellow { background-color: #ffbd2e; }
+.dot-green { background-color: #27c93f; }
+
+.filename-tab {
+  background-color: #282c34;
+  color: #abb2bf;
+  font-size: 0.75rem;
+  padding: 4px 12px;
+  border-radius: 4px 4px 0 0;
+  border-top: 2px solid #61afef;
+  margin-left: 10px;
+}
+
+/* Editor Body & Layout */
+.editor-body {
+  position: relative;
+  padding: 20px 0;
+  background-color: #282c34;
+  color: #abb2bf;
+  font-size: 14px;
+}
+
+/* Satır Numaraları (Hizalama Garantili) */
+.line-numbers {
+  position: absolute;
+  left: 0;
+  top: 20px;
+  bottom: 0;
+  width: 40px;
+  text-align: right;
+  padding-right: 10px;
+  color: #495162;
+  border-right: 1px solid #3e4451;
+  background-color: #282c34;
+  user-select: none;
+  display: flex;
+  flex-direction: column; /* Alt alta zorla */
+  gap: 0;
+}
+
+.line-number { 
+  display: block; 
+  height: 28px; /* Sabit Yükseklik */
+  line-height: 28px; 
+}
+
+/* Kod Alanı */
+.code-area {
+  margin-left: 50px;
+  padding-right: 20px;
+  display: flex;
+  flex-direction: column; /* Alt alta zorla */
+}
+
+.code-line {
+  display: flex;
+  align-items: center;
+  height: 28px; /* Sabit Yükseklik */
+  line-height: 28px;
+  width: 100%;
+}
+
+/* Input Alanı (Textarea yerine Input) */
+.code-input {
+  width: 100%;
+  height: 28px;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  color: #98c379; /* Kod Yeşili */
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  line-height: 28px;
+  padding: 0;
+  margin: 0;
+  display: block;
+}
+.code-input::placeholder { color: #5c6370; font-style: italic; opacity: 0.5; }
+
+/* Syntax Highlighting Renkleri */
+.token-selector { color: #e06c75; font-weight: bold; }
+.token-property { color: #56b6c2; }
+.token-value { color: #d19a66; }
+.token-brace { color: #abb2bf; }
+.token-comment { color: #5c6370; font-style: italic; margin-left: 8px; }
+
+/* 5. ANIMATIONS
+   ========================================================================== */
+
+/* Hata Titremesi */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); border-color: #ef4444; }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+.animate-shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+
+/* Zafer Zıplaması */
+@keyframes bounce-happy {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.15) translateY(-12px); }
+}
+.animate-win { animation: bounce-happy 0.7s infinite; }
+
+/* Boşta Süzülme */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-idle { animation: float 3s ease-in-out infinite; }
+
+/* Level Geçiş Efekti */
+@keyframes popIn {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-pop { animation: popIn 0.4s ease-out forwards; }
+
+/* 6. SCROLLBAR (Custom)
+   ========================================================================== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: #4b5263; border-radius: 4px; }
+::-webkit-scrollbar-track { background: #282c34; }
+
+@keyframes hue-rotate {
+  from { filter: hue-rotate(0deg); }
+  to { filter: hue-rotate(360deg); }
+}
+
+.animate-hue-rotate {
+  animation: hue-rotate 3s linear infinite;
+}
+
+/* Hayvanlar daha hizli ziplasin diye (Opsiyonel) */
+.animate-bounce {
+  animation: bounce 0.5s infinite !important;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
