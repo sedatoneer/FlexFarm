@@ -227,6 +227,7 @@ export default function GameArena() {
   const [showLevelMenu, setShowLevelMenu] = useState(false);
   const [showTip, setShowTip] = useState(false);
   const [showCheatsheet, setShowCheatsheet] = useState(false);
+  const [cheatsheetTab, setCheatsheetTab] = useState<'docs' | 'answers'>('docs');
   const [isError, setIsError] = useState(false);
   const [playerName, setPlayerName] = useState("");
   const [showCertificate, setShowCertificate] = useState(false);
@@ -383,25 +384,53 @@ export default function GameArena() {
       {showCheatsheet && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={() => setShowCheatsheet(false)}>
           <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
-            <div className="flex justify-between items-center mb-4 border-b pb-2">
-              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2"><Icons.Book /> CSS Flexbox Sozlugu</h3>
-              <button onClick={() => setShowCheatsheet(false)} className="text-slate-400 hover:text-red-500"><Icons.Close /></button>
+            {/* TAB MENU */}
+            <div className="flex gap-4 border-b mb-4">
+              <button 
+                onClick={() => setCheatsheetTab('docs')}
+                className={`text-lg font-bold flex items-center gap-2 pb-1 transition-colors ${cheatsheetTab === 'docs' ? 'text-slate-800 border-b-2 border-green-500' : 'text-slate-400 hover:text-slate-600'}`}
+              >
+                <Icons.Book /> Sozluk
+              </button>
+              <button 
+                onClick={() => setCheatsheetTab('answers')}
+                className={`text-lg font-bold flex items-center gap-2 pb-1 transition-colors ${cheatsheetTab === 'answers' ? 'text-slate-800 border-b-2 border-yellow-500' : 'text-slate-400 hover:text-slate-600'}`}
+              >
+                <Icons.Check /> Cevap Anahtari
+              </button>
+              <button onClick={() => setShowCheatsheet(false)} className="ml-auto text-slate-400 hover:text-red-500 transition-colors"><Icons.Close /></button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {Object.entries(CheatsheetData).map(([title, items]) => (
-                <div key={title}>
-                  <h4 className="font-bold text-green-700 mb-2 border-b border-green-100">{title}</h4>
-                  <ul className="text-sm space-y-1">
-                    {items.map((item, idx) => (
-                      <li key={idx} className="flex justify-between">
-                        <code className="text-blue-600 bg-blue-50 px-1 rounded">{item.code}</code>
-                        <span className="text-slate-500">{item.desc}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
+
+            {/* TAB CONTENT: DOCS */}
+            {cheatsheetTab === 'docs' ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {Object.entries(CheatsheetData).map(([title, items]) => (
+                  <div key={title}>
+                    <h4 className="font-bold text-green-700 mb-2 border-b border-green-100">{title}</h4>
+                    <ul className="text-sm space-y-1">
+                      {items.map((item, idx) => (
+                        <li key={idx} className="flex justify-between">
+                          <code className="text-blue-600 bg-blue-50 px-1 rounded">{item.code}</code>
+                          <span className="text-slate-500">{item.desc}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              // TAB CONTENT: ANSWERS (YENI)
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                {levels.map(l => (
+                  <div key={l.id} className="p-3 border rounded-lg bg-slate-50 hover:bg-white hover:shadow-md transition-all text-center group">
+                    <div className="text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider group-hover:text-green-600">Level {l.id}</div>
+                    <div className="text-[10px] font-mono text-slate-600 bg-white border border-slate-100 p-1 rounded break-words leading-tight select-all cursor-text">
+                      {l.correctCss}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -583,7 +612,7 @@ export default function GameArena() {
              <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">
                {isSandbox ? 'Serbest Mod' : level.title}
              </h2>
-             <button onClick={() => setShowCheatsheet(true)} className="text-slate-400 hover:text-blue-600 transition-colors" title="Sozluk"><Icons.Book /></button>
+             <button onClick={() => setShowCheatsheet(true)} className="text-slate-400 hover:text-blue-600 transition-colors" title="Sozluk ve Cevaplar"><Icons.Book /></button>
           </div>
           
           <p className="text-slate-600 leading-relaxed mb-8 text-lg">
